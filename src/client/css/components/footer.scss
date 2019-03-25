@@ -1,0 +1,22 @@
+
+.footer {
+	text-align: center;
+	margin-top: 70px;
+	margin-bottom: 40px;
+	border-top: 1px solid #eee;
+
+	ul {
+		padding: 0;
+		max-width: 500px;
+		margin: 0 auto;
+		display: flex;
+		text-align: center;
+		justify-content: space-between;
+		list-style-type: none;
+		flex-wrap: wrap;
+
+		li {
+			padding: 10px;
+		}
+	}
+}

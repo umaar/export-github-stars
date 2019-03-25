@@ -1,0 +1,39 @@
+
+.nav {
+	border: none;
+	font-size: 13px;
+	font-weight: 300;
+	background-color: #333333;
+	margin: 0 auto;
+
+	a {
+		font-weight: bold;
+		color: white;
+		text-decoration: none;
+	}
+}
+
+.nav__menu {
+	list-style-type: none;
+	display: flex;
+	align-items: center;
+
+	li {
+		margin: 5px 10px;
+	}
+
+	a {
+		font-size: 14px;
+	}
+}
+
+.nav__container {
+	max-width: $container-width;
+	margin-right: auto;
+	margin-left: auto;
+	padding-left: 15px;
+	padding-right: 15px;
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
