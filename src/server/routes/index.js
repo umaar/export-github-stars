@@ -1,6 +1,7 @@
 const express = require('express');
 const config = require('config');
 const got = require('got');
+const escapeGoat = require('escape-goat');
 
 const jobQueueQueries = require('../db/queries/job-queue');
 const userStarsQueries = require('../db/queries/user-stars');
@@ -174,7 +175,7 @@ const api = {
 
 async function setupJobs() {
 	const jobProcessors = {
-		async 'fetch-stars'({username}) {
+		async 'fetch-stars'(username) {
 			const githubPageSize = 2;
 
 			console.log(`Received a fetch star job for ${username}`);
@@ -274,8 +275,6 @@ async function setupJobs() {
 	}
 
 	async function processJobQueue() {
-		console.log('\nLooking for a new job ➡️');
-
 		const nextJob = await jobQueueQueries.getNextJob();
 
 		if (nextJob) {
@@ -289,23 +288,66 @@ async function setupJobs() {
 
 	setInterval(async () => {
 		await processJobQueue();
-	}, 2000);
+	}, 1500);
 }
 
 setupJobs();
 
+async function canUsernameBeSubmitted(username) {
+	if (username.length > 20 || !username.length) {
+		return {
+			errorMessage: 'That username is unexpected in length'
+		};
+	}
+
+	const jobData = {type: 'fetch-stars', data: username};
+	const existingJob = await jobQueueQueries.getJobByTypeAndData(jobData);
+
+	if (existingJob) {
+		console.info(`Existing job found`, existingJob);
+		return {
+			errorMessage: `You already have a job in the queue!`
+		};
+	}
+
+	const mostRecent = await userStarsQueries.getMostRecentThing(username);
+
+	if (mostRecent) {
+		const mostRecentCreatedTime = new Date(mostRecent.database_entry_updated_at);
+		const howLongAgo = Date.now() - mostRecentCreatedTime;
+		console.info(`Existing thing found, was created ${howLongAgo}`);
+
+		const tenMinutes = ((1000 * 60) * 10);
+
+		if (howLongAgo < tenMinutes) {
+			return {
+				errorMessage: `Your stars have been updated quite recently already, try again soon!`
+			};
+		}
+	}
+
+	return true;
+}
+
 router.post('/submit-github-username', async (req, res) => {
 	const githubUsername = req.body['github-username-field'];
+	const username = escapeGoat.escape(githubUsername);
 
-	const mostRecent = await userStarsQueries.getMostRecentThing(githubUsername);
+	// sanitize username here
+	const {errorMessage} = await canUsernameBeSubmitted(username);
 
-	console.log({mostRecent});
+	if (errorMessage) {
+		req.flash('messages', {
+			status: 'danger',
+			value: errorMessage
+		});
+
+		return res.redirect('/');
+	}
 
 	const job = {
 		type: 'fetch-stars',
-		data: {
-			username: githubUsername
-		}
+		data: username
 	};
 
 	try {
@@ -314,7 +356,7 @@ router.post('/submit-github-username', async (req, res) => {
 		console.log('There was an error creating a job: ', err);
 		req.flash('messages', {
 			status: 'danger',
-			value: `Could not create a job for ${githubUsername}`
+			value: `Could not create a job for ${username}`
 		});
 
 		return res.redirect('/');
@@ -322,10 +364,21 @@ router.post('/submit-github-username', async (req, res) => {
 
 	req.flash('messages', {
 		status: 'success',
-		value: `Created a job for ${githubUsername}`
+		value: `Created a job for ${username}`
 	});
 
 	return res.redirect('/');
+});
+
+router.get('/jobs', async (req, res) => {
+	const jobs = await jobQueueQueries.getAllJobs();
+
+	const renderObject = {
+		messages: req.flash('messages'),
+		jobs
+	};
+
+	res.render('jobs', renderObject);
 });
 
 router.get('/', async (req, res) => {
