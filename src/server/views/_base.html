@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{config.productName}}">
+    <link rel="icon" type="image/jpeg" href="{{rev('img/favicon.png')}}" />
+
+    {% if title %}
+      <title>{{ title }} - {{config.productName}}</title>
+    {% else %}
+      <title>{{config.productName}}</title>
+    {% endif %}
+    <link rel="stylesheet" href="{{rev('css/main.css')}}">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,700,800%7cCardo:400italic%7cMerriweather:400,300,300italic,400italic' rel='stylesheet' type='text/css'>
+    {% block css %}{% endblock %}
+
+    <script>
+      window.exportGitHubStarsConfig = {};
+    </script>
+
+      <script>
+      {% if latestScoreURL %}
+        window.exportGitHubStarsConfig.latestScoreURL = '{{latestScoreURL}}';
+      {% endif %}
+      </script>
+
+  </head>
+  <body>
+    {% include "./partials/nav.html" %}
+    {% include "./partials/flash.html" %}
+    {% block content %}
+    {% endblock %}
+    {% include "./partials/footer.html" %}
+    <script async src="{{rev('js/main.js')}}"></script>
+    {% block js %}{% endblock %}
+  </body>
+</html>

@@ -9,3 +9,71 @@ $primary-blue: #2879ff;
 @import 'components/button';
 @import 'pages/home';
 
+table {
+	border-collapse: collapse;
+}
+th {
+	background: #ccc;
+}
+
+th, td {
+	border: 1px solid #ccc;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background: #efefef;
+}
+
+tr:hover {
+	background: #d1d1d1;
+}
+
+.stars, .stars ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.stars {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+}
+
+.star {
+	flex: 0 1 27%;
+	color: #586069;
+	min-width: 240px;
+	margin: 20px 20px;
+}
+
+.star-description {
+	font-size: 14px;
+}
+
+.star a {
+	color: #0366d6;
+	letter-spacing: 1px;
+	text-decoration: none;
+	font-size: 19px;
+	word-break: break-word;
+}
+
+.star-details {
+	display: flex;
+	font-size: 13px;
+	justify-content: space-between;
+}
+
+p.rate-limit {
+    font-family: Courier;
+    text-align: center;
+    margin-top: 5px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dadada;
+    padding-top: 5px;
+    font-size: 14px;
+    color: #636363;
+    letter-spacing: 1px;
+}

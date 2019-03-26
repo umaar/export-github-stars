@@ -1,0 +1,20 @@
+<h3>Found <strong>{{jobs.length}}</strong> jobs</h3>
+
+<table>
+	<thead>
+		<tr>
+			{% for key, value in jobs[0] %}
+				<th>{{key}}</th>
+			{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for job in jobs %}
+			<tr>
+				{% for key, value in job %}
+					<td>{{value}}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

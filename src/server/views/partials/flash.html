@@ -1,0 +1,5 @@
+{% if messages.length %}
+  <div class="alert alert__{{ messages[0].status}}" role="alert">
+    <p>{{ messages[0].value }}</p>
+  </div>
+{% endif %}

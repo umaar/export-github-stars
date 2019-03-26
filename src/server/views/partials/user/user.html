@@ -1,0 +1,36 @@
+<h3>
+	{{username}} has {{totalStarsLength}} stars
+</h3>
+
+<p>
+	Currently displaying {{stars.length}}
+</p>
+
+<ul class="stars">
+	{% for star in stars %}
+		<li class="star">
+			<h2>
+			    <a href="{{star.repo_url}}">
+			        {{star.repo_full_name}}
+			    </a>
+			</h2>
+
+			{% if star.repo_description %}
+				<p class="star-description">
+				    {{star.repo_description}}
+				</p>
+			{% endif %}
+
+			<ul class="star-details">
+				{% if star.repo_language %}
+					<li>⚪️ {{star.repo_language}}</li>
+				{% endif %}
+				<li>⭐️ &nbsp; {{star.repo_stars}}</li>
+				<li>🗓️ {{star.starred_time | formatDistance}}</li>
+			</ul>
+
+			<p></p>
+			<p></p>
+		</li>
+	{% endfor %}
+</ul>
