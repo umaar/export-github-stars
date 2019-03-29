@@ -188,14 +188,14 @@ async function setupJobs() {
 			console.log('Found a new job');
 			await handleJob(nextJob);
 		}
+
+		setTimeout(async () => {
+			await processJobQueue();
+		}, 1500);
 	}
 
 	await findIncompleteJobs();
 	await processJobQueue();
-
-	setInterval(async () => {
-		await processJobQueue();
-	}, 1500);
 }
 
 setupJobs();
@@ -278,7 +278,11 @@ router.post('/submit-github-username', async (req, res) => {
 
 router.get('/user/:rawUsername', async (req, res) => {
 	const username = escapeGoat.escape(req.params.rawUsername);
+
+	console.time('Time to retrieve stars for user');
 	const stars = await userStarsQueries.getStarsForUser(username);
+	const totalStarsLength = await userStarsQueries.getStarsCountForUser(username);
+	console.timeEnd('Time to retrieve stars for user');
 
 	if (!stars.length) {
 		req.flash('messages', {
@@ -292,6 +296,7 @@ router.get('/user/:rawUsername', async (req, res) => {
 	const renderObject = {
 		messages: req.flash('messages'),
 		stars,
+		totalStarsLength,
 		username
 	};
 
@@ -310,7 +315,9 @@ router.get('/jobs', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+	console.time('Time to get distinct users');
 	const distinctUsers = await userStarsQueries.getDistinctUsersWithStarCount();
+	console.timeEnd('Time to get distinct users');
 
 	const renderObject = {
 		messages: req.flash('messages'),

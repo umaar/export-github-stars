@@ -81,15 +81,5 @@
 		app.use(express.static('dist', {
 			maxAge: '1y'
 		}));
-
-		app.use((req, res, next) => {
-			const awairSession = req.session.awair;
-
-			if (awairSession && awairSession.accessToken) {
-				res.locals.user = awairSession;
-			}
-
-			next();
-		});
 	};
 })(module.exports);
