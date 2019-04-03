@@ -8,7 +8,6 @@ const {formatDistance} = require('date-fns');
 
 const Octokit = require('@octokit/rest')
 
-
 const {app} = require('../app-instance');
 
 const jobQueueQueries = require('../db/queries/job-queue');
@@ -44,7 +43,7 @@ const api = {
 		console.time('API Request');
 		const response  = await octokit.activity.listReposStarredByUser({
 			page,
-			username,
+			username: username.toLowerCase(),
 			per_page: amountPerPage,
 			sort: 'created',
 			mediaType: {
@@ -59,6 +58,7 @@ const api = {
 async function setupJobs() {
 	const jobProcessors = {
 		async 'fetch-stars'(username) {
+			username = username.toLowerCase();
 			const githubPageSize = 100;
 
 			console.log(`Received a fetch star job for ${username}`);
@@ -84,11 +84,20 @@ async function setupJobs() {
 			while (true) {
 				console.log(`Requesting page ${page}, items per page: ${githubPageSize}`);
 
-				let {data, headers} = await api.getStarsOnPage({
-					amountPerPage: githubPageSize,
-					page,
-					username
-				});
+				let response;
+
+				try {
+					response = await api.getStarsOnPage({
+						amountPerPage: githubPageSize,
+						page,
+						username
+					});
+				} catch (err) {
+					console.log('There was an error', err);
+					return;
+				}
+
+				 let {data, headers} = response;
 
 				function getTimeDistance(targetTime) {
 					return formatDistance(targetTime, new Date(), {
@@ -201,6 +210,7 @@ async function setupJobs() {
 setupJobs();
 
 async function canUsernameBeSubmitted(username) {
+	username = username.toLowerCase();
 	if (username.length > 30 || !username.length) {
 		return {
 			errorMessage: 'That username is unexpected in length'
@@ -220,6 +230,10 @@ async function canUsernameBeSubmitted(username) {
 	const mostRecent = await userStarsQueries.getMostRecentThing(username);
 
 	if (mostRecent) {
+		/*
+			TODO: `database_entry_updated_at` is not an accurate indicator of when
+			a job was last run for a user. Shoud we persist job_queue records?
+		*/
 		const mostRecentCreatedTime = new Date(mostRecent.database_entry_updated_at);
 		const howLongAgo = Date.now() - mostRecentCreatedTime;
 
@@ -237,7 +251,7 @@ async function canUsernameBeSubmitted(username) {
 
 router.post('/submit-github-username', async (req, res) => {
 	const githubUsername = req.body['github-username-field'];
-	const username = escapeGoat.escape(githubUsername);
+	const username = escapeGoat.escape(githubUsername).toLowerCase();
 
 	// sanitize username here
 	const {errorMessage} = await canUsernameBeSubmitted(username);
@@ -277,7 +291,8 @@ router.post('/submit-github-username', async (req, res) => {
 });
 
 router.get('/user/:rawUsername', async (req, res) => {
-	const username = escapeGoat.escape(req.params.rawUsername);
+	// Should redirect page to lowercase version here
+	const username = escapeGoat.escape(req.params.rawUsername).toLowerCase();
 
 	console.time('Time to retrieve stars for user');
 	const stars = await userStarsQueries.getStarsForUser(username);
