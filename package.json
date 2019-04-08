@@ -12,10 +12,10 @@
     "update-deps": "ncu -a"
   },
   "dependencies": {
-    "@octokit/rest": "^16.20.0",
+    "@octokit/rest": "^16.23.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
-    "config": "^3.0.1",
+    "config": "^3.1.0",
     "connect-flash": "^0.1.1",
     "connect-session-knex": "^1.4.0",
     "cookie-parser": "~1.4.4",
@@ -38,7 +38,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "del": "^4.0.0",
+    "del": "^4.1.0",
     "gulp": "^4.0.0",
     "gulp-nodemon": "^2.4.2",
     "gulp-replace": "^1.0.0",
@@ -46,9 +46,9 @@
     "gulp-rev-delete-original": "^0.2.3",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
-    "rollup": "^1.7.2",
-    "rollup-plugin-commonjs": "^9.2.1",
-    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup": "^1.9.0",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-node-resolve": "^4.2.1",
     "rollup-plugin-terser": "^4.0.4",
     "rollup-plugin-uglify": "^6.0.2",
     "tiny-lr": "^1.1.1",
