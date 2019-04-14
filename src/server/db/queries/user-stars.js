@@ -1,12 +1,5 @@
 const knex = require('../connection');
 
-function getMostRecentThing(username) {
-	return knex('user_stars')
-		.where({ stargazer_username: username })
-		.orderBy('database_entry_updated_at', 'desc')
-		.first();
-}
-
 function getStarsForUser(username) {
 	return knex('user_stars')
 		.select(
@@ -51,7 +44,6 @@ function insertStar(star) {
 module.exports = {
 	getStarsForUser,
 	insertStar,
-	getMostRecentThing,
 	getDistinctUsersWithStarCount,
 	getStarsCountForUser
 };

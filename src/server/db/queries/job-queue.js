@@ -4,31 +4,57 @@ const knex = require('../connection');
 
 function markJobAsBeingProcessed(id) {
 	return knex('job_queue')
-	  .where({ id })
-	  .update({ is_processing: true });
+		.where({ id })
+		.update({
+			is_processing: true,
+			updated_at: +new Date()
+		});
 }
 
-function deleteJobByID(id) {
-	console.log('Deleting job by ID: ', id);
+function markJobCompleteJobByID(id) {
+	console.log('Marking Job complete: ', id);
 	return knex('job_queue')
-	  .where({ id })
-	  .del();
+		.where({ id })
+		.update({
+			is_processing: false,
+			is_complete: true,
+			updated_at: +new Date()
+		});
 }
 
 function getAllJobs() {
 	return knex('job_queue');
 }
 
-function getJobByTypeAndData({type, data}) {
-	return knex('job_queue')
-		.where({type, data})
+function getMostRecentUserJob({type, data}) {
+	return knex('user_stars')
+		.where({ stargazer_username: username })
+		.orderBy('database_entry_updated_at', 'desc')
 		.first();
+
+	return knex('job_queue')
+		.where({
+			type,
+			data,
+			is_complete: true
+		})
+		.first();
+}
+
+function getIncompleteJobByTypeAndData({type, data}) {
+	return knex('job_queue')
+	.where({
+		type,
+		data,
+		is_complete: false
+	})
+	.first();
 }
 
 function getJobInAProcessingState() {
 	return knex('job_queue')
-		.where('is_processing', true)
-		.first();
+	.where('is_processing', true)
+	.first();
 }
 
 async function getNextJob() {
@@ -40,6 +66,7 @@ async function getNextJob() {
 	}
 
 	return knex('job_queue')
+		.where('is_complete', false)
 		.orderBy('created_at', 'asc')
 		.first();
 }
@@ -64,7 +91,7 @@ module.exports = {
 	getNextJob,
 	markJobAsBeingProcessed,
 	getJobInAProcessingState,
-	deleteJobByID,
+	markJobCompleteJobByID,
 	getAllJobs,
-	getJobByTypeAndData
+	getIncompleteJobByTypeAndData
 };
