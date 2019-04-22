@@ -8,7 +8,7 @@
 	<form action="/submit-github-username" method="post">
 		<label for="github-username-field">GitHub Username</label>
 		<!-- https://api.github.com/users/umaar/starred?per_page=1 -->
-		<input name="github-username-field" id="github-username-field" type="text" value="" required>
+		<input name="github-username-field" id="github-username-field" type="text" value="{{exampleGithubUsername}}" required>
 
 		<input type="submit">
 	</form>
@@ -16,9 +16,7 @@
 	<ul>
 		{% for user in distinctUsers %}
 			<li>
-				<a href="/user/{{user.username}}">
-					{{user.username}}
-				</a>
+				<a href="/user/{{user.username}}">{{user.username}}</a>
 
 				&nbsp; ({{user.count}})
 			</li>

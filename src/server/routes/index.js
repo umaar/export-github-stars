@@ -34,6 +34,114 @@ function random(min,max) {
     return Math.floor(Math.random()*(max-min+1)+min);
 }
 
+const exampleGithubUsernames = [
+	"lukeed",
+	"umaar",
+	"samyk",
+	"JamesLinus",
+	"cheeaun",
+	"andrew",
+	"matthewmueller",
+	"developit",
+	"balupton",
+	"shawnbot",
+	"roccomuso",
+	"sindresorhus",
+	"Miserlou",
+	"SimonWaldherr",
+	"icebob",
+	"ahmadawais",
+	"XhmikosR",
+	"indatawetrust",
+	"jaggedsoft",
+	"brunolemos",
+	"fenglyu",
+	"masonhensley",
+	"ngryman",
+	"endel",
+	"mathiasbynens",
+	"mattb",
+	"thompsonemerson",
+	"mottie",
+	"Mottie",
+	"connor",
+	"yields",
+	"dlo",
+	"IAmMateo",
+	"nicholasadamou",
+	"jakiestfu",
+	"ademilter",
+	"ai",
+	"kentcdodds",
+	"trimstray",
+	"1000ch",
+	"darcyclarke",
+	"addyosmani",
+	"arkokoley",
+	"subtleGradient",
+	"mwawrusch",
+	"paulirish",
+	"SaraVieira",
+	"f",
+	"juandesant",
+	"jsantell",
+	"medikoo",
+	"barisdemiray",
+	"koop",
+	"mark",
+	"evenstensberg",
+	"jfhbrook",
+	"Bharathkumarraju",
+	"pjconnors",
+	"thomasboyt",
+	"helderburato",
+	"brianleroux",
+	"EricYangXD",
+	"Valve",
+	"g8up",
+	"cli",
+	"daffl",
+	"kis",
+	"monteslu",
+	"rowanmanning",
+	"emattiazzi",
+	"russellgoldenberg",
+	"jmsrsd",
+	"roblarsen",
+	"ericwannn",
+	"jwalton",
+	"imhuay",
+	"wilmoore",
+	"kylesome",
+	"yining1023",
+	"paul",
+	"wesbos",
+	"mdunham",
+	"bertomoore",
+	"apsrcreatix",
+	"paigen11",
+	"squarefeet",
+	"malchata",
+	"ben",
+	"aj",
+	"simon",
+	"heymatthenry",
+	"tomdale",
+	"kir",
+	"JackZhouMine",
+	"monsdar",
+	"james",
+	"lad",
+	"davidpauljunior",
+	"cfjedimaster",
+	"CriseLYJ",
+	"tddmonkey",
+	"benjclark",
+	"aa",
+	"blaize",
+	"sir"
+];
+
 const api = {
 	async getStarsOnPage({page, amountPerPage, username}) {
 		if (!page || !amountPerPage) {
@@ -183,8 +291,7 @@ async function setupJobs() {
 			await jobQueueQueries.markJobAsBeingProcessed(jobID);
 			await jobHandler(job.data);
 			console.log('Job has completed', jobID);
-			await jobQueueQueries.deleteJobByID(jobID)
-			//delete job here!
+			await jobQueueQueries.markJobCompleteJobByID(jobID)
 		} else {
 			throw new Error(`Found a job of type: ${jobType}, but could not find a corresponding handler`);
 		}
@@ -218,23 +325,31 @@ async function canUsernameBeSubmitted(username) {
 	}
 
 	const jobData = {type: 'fetch-stars', data: username};
-	const existingJob = await jobQueueQueries.getJobByTypeAndData(jobData);
+
+
+	// Rework this
+
+	/*
+		1. Get the most recent job matching `jobData`
+		2. If no job, return true
+		3. If job & is processing, return false
+		4. If job and is incomplete and is not processing (e.g. is pending), return false
+		5. If is complete, find out when it was last updated. If it was last updated less than 10 mins ago, return false
+	*/
+
+	const existingJob = await jobQueueQueries.getIncompleteJobByTypeAndData(jobData);
 
 	if (existingJob) {
 		console.info(`Existing job found`, existingJob);
 		return {
-			errorMessage: `You already have a job in the queue!`
+			errorMessage: `${existingJob.data} already has a job in the queue!`
 		};
 	}
 
-	const mostRecent = await userStarsQueries.getMostRecentThing(username);
+	const mostRecent = await jobQueueQueries.getMostRecentCompletedUserJob(jobData);
 
 	if (mostRecent) {
-		/*
-			TODO: `database_entry_updated_at` is not an accurate indicator of when
-			a job was last run for a user. Shoud we persist job_queue records?
-		*/
-		const mostRecentCreatedTime = new Date(mostRecent.database_entry_updated_at);
+		const mostRecentCreatedTime = new Date(mostRecent.updated_at);
 		const howLongAgo = Date.now() - mostRecentCreatedTime;
 
 		const tenMinutes = ((1000 * 60) * 10);
@@ -251,7 +366,10 @@ async function canUsernameBeSubmitted(username) {
 
 router.post('/submit-github-username', async (req, res) => {
 	const githubUsername = req.body['github-username-field'];
-	const username = escapeGoat.escape(githubUsername).toLowerCase();
+	const username = escapeGoat
+		.escape(githubUsername)
+		.trim()
+		.toLowerCase();
 
 	// sanitize username here
 	const {errorMessage} = await canUsernameBeSubmitted(username);
@@ -331,22 +449,27 @@ router.get('/jobs', async (req, res) => {
 
 router.get('/', async (req, res) => {
 	console.time('Time to get distinct users');
-	const distinctUsers = await userStarsQueries.getDistinctUsersWithStarCount();
+	const distinctUsersUnsorted = await userStarsQueries.getDistinctUsersWithStarCount();
 	console.timeEnd('Time to get distinct users');
+
+	const distinctUsers = distinctUsersUnsorted.sort((itemA, itemB) => {
+		const countA = itemA.count;
+		const countB = itemB.count;
+
+		if (countA < countB) {
+		  return -1;
+		}
+		if (countA > countB) {
+		  return 1;
+		}
+	}).reverse();
+
+	const exampleGithubUsername = exampleGithubUsernames[random(0, exampleGithubUsernames.length - 1)];
 
 	const renderObject = {
 		messages: req.flash('messages'),
-		distinctUsers: distinctUsers.sort((itemA, itemB) => {
-			const countA = itemA.count;
-			const countB = itemB.count;
-
-			if (countA < countB) {
-			  return -1;
-			}
-			if (countA > countB) {
-			  return 1;
-			}
-		}).reverse()
+		exampleGithubUsername,
+		distinctUsers
 	};
 
 	res.render('index', renderObject);

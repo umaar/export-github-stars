@@ -26,18 +26,14 @@ function getAllJobs() {
 	return knex('job_queue');
 }
 
-function getMostRecentUserJob({type, data}) {
-	return knex('user_stars')
-		.where({ stargazer_username: username })
-		.orderBy('database_entry_updated_at', 'desc')
-		.first();
-
+function getMostRecentCompletedUserJob({type, data}) {
 	return knex('job_queue')
 		.where({
 			type,
 			data,
 			is_complete: true
 		})
+		.orderBy('updated_at', 'desc')
 		.first();
 }
 
@@ -93,5 +89,6 @@ module.exports = {
 	getJobInAProcessingState,
 	markJobCompleteJobByID,
 	getAllJobs,
-	getIncompleteJobByTypeAndData
+	getIncompleteJobByTypeAndData,
+	getMostRecentCompletedUserJob
 };
