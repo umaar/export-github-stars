@@ -1,6 +1,6 @@
 const knex = require('../connection');
 
-function getStarsForUser(username) {
+function getStarsForUser({username, offset, limit = 20}) {
 	return knex('user_stars')
 		.select(
 			'user_stars.*',
@@ -12,7 +12,8 @@ function getStarsForUser(username) {
 		)
 		.where({ stargazer_username: username })
 		.join('repos', {'user_stars.repo_id': 'repos.id'})
-		.limit(20);
+		.limit(limit)
+		.offset(offset);
 }
 
 async function getStarsCountForUser(username) {

@@ -412,18 +412,45 @@ router.get('/user/:rawUsername', async (req, res) => {
 	// Should redirect page to lowercase version here
 	const username = escapeGoat.escape(req.params.rawUsername).toLowerCase();
 
+	const page = parseInt(req.query.page);
+
+	const firstPageForUsername = `/user/${username}?page=1`;
+
+	if (page < 1 || Number.isNaN(page)) {
+		return res.redirect(firstPageForUsername);
+	}
+
+	const itemsPerPage = 2;
+
 	console.time('Time to retrieve stars for user');
-	const stars = await userStarsQueries.getStarsForUser(username);
+
+	const stars = await userStarsQueries.getStarsForUser({
+		username,
+		offset: page * itemsPerPage,
+		limit: itemsPerPage
+	});
+
 	const totalStarsLength = await userStarsQueries.getStarsCountForUser(username);
 	console.timeEnd('Time to retrieve stars for user');
 
 	if (!stars.length) {
-		req.flash('messages', {
-			status: 'danger',
-			value: `Couldn't find ${username}`
-		});
+		if (page === 1) {
+			let errorMessage = `Couldn't find ${username}`;
 
-		return res.redirect('/');
+			req.flash('messages', {
+				status: 'danger',
+				value: errorMessage
+			});
+
+			return res.redirect('/');
+		} else {
+			let errorMessage = `Couldn't find ${username}`;
+
+			req.flash('messages', {
+				status: 'danger',
+				value: `No stars found`
+			});
+		}
 	}
 
 	const renderObject = {
