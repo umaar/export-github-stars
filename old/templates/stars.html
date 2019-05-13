@@ -1,0 +1,26 @@
+{% for star in stars %}
+	<li class="star">
+		<h2>
+		    <a href="{{star.url}}">
+		        {{star.fullName}}
+		    </a>
+		</h2>
+
+		{% if star.description %}
+			<p class="star-description">
+			    {{star.description}}
+			</p>
+		{% endif %}
+
+		<ul class="star-details">
+			{% if star.language %}
+				<li>⚪️ {{star.language}}</li>
+			{% endif %}
+			<li>⭐️ &nbsp; {{star.stars}}</li>
+			<li>🗓️ {{star.starredAt | formatDistance}}</li>
+		</ul>
+
+		<p></p>
+		<p></p>
+	</li>
+{% endfor %}
