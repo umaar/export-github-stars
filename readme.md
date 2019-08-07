@@ -32,6 +32,7 @@ npm start
 
 ### TODO:
 
+- Automatically update user stars every ~ few hours
 - Insert stars/repos using transactions in bulk
 - Implement ajax for pagination
 - Cache users and their star counts

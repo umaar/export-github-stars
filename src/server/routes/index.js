@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const config = require('config');
 const got = require('got');
-const escapeGoat = require('escape-goat');
+const {htmlEscape} = require('escape-goat');
 const {formatDistance} = require('date-fns');
 
 const Octokit = require('@octokit/rest')
@@ -366,8 +366,7 @@ async function canUsernameBeSubmitted(username) {
 
 router.post('/submit-github-username', async (req, res) => {
 	const githubUsername = req.body['github-username-field'];
-	const username = escapeGoat
-		.escape(githubUsername)
+	const username = htmlEscape(githubUsername)
 		.trim()
 		.toLowerCase();
 
@@ -410,7 +409,7 @@ router.post('/submit-github-username', async (req, res) => {
 
 router.get('/user/:rawUsername', async (req, res) => {
 	// Should redirect page to lowercase version here
-	const username = escapeGoat.escape(req.params.rawUsername).toLowerCase();
+	const username = htmlEscape(req.params.rawUsername).toLowerCase();
 
 	const page = parseInt(req.query.page);
 
