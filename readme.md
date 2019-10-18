@@ -32,6 +32,7 @@ npm start
 
 ### TODO:
 
+- Send emails using an email service about database size changes
 - Automatically update user stars every ~ few hours
 - Insert stars/repos using transactions in bulk
 - Implement ajax for pagination
