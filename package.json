@@ -12,14 +12,14 @@
     "update-deps": "ncu -u"
   },
   "dependencies": {
-    "@octokit/rest": "^16.34.0",
+    "@octokit/rest": "^16.35.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
-    "config": "^3.2.3",
+    "config": "^3.2.4",
     "connect-flash": "^0.1.1",
-    "connect-session-knex": "^1.4.0",
+    "connect-session-knex": "^1.5.0",
     "cookie-parser": "~1.4.4",
-    "date-fns": "^2.6.0",
+    "date-fns": "^2.8.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "escape-goat": "^2.1.1",
@@ -28,7 +28,7 @@
     "express-session": "^1.17.0",
     "forcedomain": "^2.0.0",
     "got": "^9.6.0",
-    "knex": "^0.19.5",
+    "knex": "^0.20.2",
     "nunjucks": "^3.2.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
@@ -46,12 +46,12 @@
     "gulp-rev-delete-original": "^0.2.3",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
-    "rollup": "^1.25.2",
+    "rollup": "^1.27.2",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.1.2",
     "rollup-plugin-uglify": "^6.0.3",
     "tiny-lr": "^1.1.1",
-    "vinyl-paths": "^3.0.0"
+    "vinyl-paths": "^3.0.1"
   }
 }
