@@ -1,19 +1,19 @@
 require('dotenv').config();
 
 const path = require('path');
-const level = require('level')
+const level = require('level');
 const express = require('express');
 const nunjucks = require('nunjucks');
 const {formatDistance, parseISO} = require('date-fns');
 
 const app = express();
 
-const db = level(process.env.DATABASE_NAME, { valueEncoding: 'json' });
+const database = level(process.env.DATABASE_NAME, {valueEncoding: 'json'});
 
 const username = 'umaar';
 
 async function getStars() {
-	const stars = await db.get(username);
+	const stars = await database.get(username);
 
 	console.log(`Found ${stars.length} for ${username}. Example: `);
 	console.log(stars[0]);
@@ -25,6 +25,7 @@ async function getStars() {
 		if (starredAtA < starredAtB) {
 		  return -1;
 		}
+
 		if (starredAtA > starredAtB) {
 		  return 1;
 		}
@@ -34,14 +35,14 @@ async function getStars() {
 }
 
 function createServer() {
-	const nunjucksEnv = nunjucks.configure(path.join(__dirname, 'templates'), {
+	const nunjucksEnvironment = nunjucks.configure(path.join(__dirname, 'templates'), {
 		express: app,
 		autoescape: true,
 		watch: true
 	});
 
-	nunjucksEnv.addFilter('formatDistance', function(str) {
-		return formatDistance(parseISO(str), new Date(), {
+	nunjucksEnvironment.addFilter('formatDistance', string => {
+		return formatDistance(parseISO(string), new Date(), {
 			includeSeconds: true,
 			addSuffix: true
 		});
@@ -50,7 +51,7 @@ function createServer() {
 	app.set('port', 3000);
 	app.use(express.static('./static'));
 
-	app.listen(app.get('port'), function () {
+	app.listen(app.get('port'), () => {
 		console.log('The server is running on http://localhost:' + app.get('port'));
 	});
 
@@ -61,15 +62,15 @@ async function start() {
 	const stars = await getStars();
 	const app = createServer();
 
-	app.get('/', (req, res) => {
+	app.get('/', (request, res) => {
 		res.render('index.html', {
 			stars: stars.slice(0, 10)
 		});
 	});
 
-	app.get('/get-stars', (req, res) => {
-		const offset = parseInt(req.query.offset) || 0;
-		const amount = parseInt(req.query.amount) || 5;
+	app.get('/get-stars', (request, res) => {
+		const offset = Number.parseInt(request.query.offset) || 0;
+		const amount = Number.parseInt(request.query.amount) || 5;
 
 		const starsToRender = stars.slice(offset, offset + amount);
 
@@ -77,10 +78,9 @@ async function start() {
 			return res.render('stars.html', {
 				stars: starsToRender
 			});
-		} else {
-			return res.sendStatus(204);
 		}
 
+		return res.sendStatus(204);
 	});
 }
 

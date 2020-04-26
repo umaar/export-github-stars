@@ -23,3 +23,6 @@ jspm_packages
 dist/
 *.sqlite
 *.env
+config/development.json
+config/staging.json
+config/production.json

@@ -26,14 +26,14 @@
 	appConfig.init = function (app, express) {
 		app.disable('x-powered-by');
 
-		const nunjucksEnv = nunjucks.configure(viewFolders, {
+		const nunjucksEnvironment = nunjucks.configure(viewFolders, {
 			express: app,
 			autoescape: true,
 			noCache: true
 		});
 
-		nunjucksEnv.addFilter('formatDistance', function(str) {
-			return formatDistance(parseISO(str), new Date(), {
+		nunjucksEnvironment.addFilter('formatDistance', string => {
+			return formatDistance(parseISO(string), new Date(), {
 				includeSeconds: true,
 				addSuffix: true
 			});

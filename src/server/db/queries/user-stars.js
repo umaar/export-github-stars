@@ -10,7 +10,7 @@ function getStarsForUser({username, offset, limit = 20}) {
 			'repos.description AS repo_description',
 			'repos.url AS repo_url'
 		)
-		.where({ stargazer_username: username })
+		.where({stargazer_username: username})
 		.join('repos', {'user_stars.repo_id': 'repos.id'})
 		.limit(limit)
 		.offset(offset);
@@ -18,7 +18,7 @@ function getStarsForUser({username, offset, limit = 20}) {
 
 async function getStarsCountForUser(username) {
 	const results = await knex('user_stars')
-		.where({ stargazer_username: username })
+		.where({stargazer_username: username})
 		.count('id as count')
 		.first();
 	return results.count;

@@ -1,9 +1,25 @@
 <h3>
-	{{username}} has {{totalStarsLength}} stars
+	<a href="{{firstPageForUsername}}">{{username}}</a> has {{totalStarsLength}} stars
 </h3>
 
 <p>
-	Currently displaying {{stars.length}}
+	Currently displaying {{stars.length}} projects
+</p>
+
+<p>
+	{% if previousPage %}
+		<span class="">
+			<a href="{{previousPage}}">←</a>
+		</span>
+	{% endif %}
+
+	Page {{currentPageNumber}} of {{totalPages}}
+
+	{% if nextPage %}
+		<span class="">
+			<a href="{{nextPage}}">→</a>
+		</span>
+	{% endif %}
 </p>
 
 <ul class="stars">

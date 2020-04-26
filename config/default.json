@@ -1,0 +1,8 @@
+{
+	"cookieSecret": "__SAMPLE_KEY__",
+	"hostname": "localhost:3000",
+	"domain": "http://localhost:3000",
+	"environment": "development",
+	"productName": "GitHub Stars",
+	"port": 3000
+}

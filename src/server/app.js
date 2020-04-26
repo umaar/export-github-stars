@@ -3,7 +3,7 @@
 
 	const {app, express} = require('./app-instance');
 
-	// const express = require('express');
+	// Const express = require('express');
 
 	const appConfig = require('./config/main-config.js');
 	const routeConfig = require('./config/route-config.js');

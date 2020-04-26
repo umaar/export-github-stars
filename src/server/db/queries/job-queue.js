@@ -1,24 +1,23 @@
 const uuidv1 = require('uuid/v1');
 const knex = require('../connection');
 
-
 function markJobAsBeingProcessed(id) {
 	return knex('job_queue')
-		.where({ id })
+		.where({id})
 		.update({
 			is_processing: true,
-			updated_at: +new Date()
+			updated_at: Number(new Date())
 		});
 }
 
 function markJobCompleteJobByID(id) {
-	console.log('Marking Job complete: ', id);
+	console.log('Marking Job complete:', id);
 	return knex('job_queue')
-		.where({ id })
+		.where({id})
 		.update({
 			is_processing: false,
 			is_complete: true,
-			updated_at: +new Date()
+			updated_at: Number(new Date())
 		});
 }
 
@@ -39,18 +38,18 @@ function getMostRecentCompletedUserJob({type, data}) {
 
 function getIncompleteJobByTypeAndData({type, data}) {
 	return knex('job_queue')
-	.where({
-		type,
-		data,
-		is_complete: false
-	})
-	.first();
+		.where({
+			type,
+			data,
+			is_complete: false
+		})
+		.first();
 }
 
 function getJobInAProcessingState() {
 	return knex('job_queue')
-	.where('is_processing', true)
-	.first();
+		.where('is_processing', true)
+		.first();
 }
 
 async function getNextJob() {
@@ -75,10 +74,10 @@ function createJob(job) {
 		id: uuidv1()
 	};
 
-	return knex('job_queue').insert(entry).catch(err => {
-		console.log(`[Job Creation Error]: `, entry, err);
+	return knex('job_queue').insert(entry).catch(error => {
+		console.log('[Job Creation Error]:', entry, error);
 
-		throw err;
+		throw error;
 	});
 }
 

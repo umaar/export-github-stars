@@ -20,10 +20,10 @@
 	server.on('error', onError);
 	server.on('listening', onListening);
 
-	function normalizePort(val) {
-		const port = parseInt(val, 10);
+	function normalizePort(value) {
+		const port = Number.parseInt(value, 10);
 		if (isNaN(port)) {
-			return val;
+			return value;
 		}
 
 		if (port >= 0) {

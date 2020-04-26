@@ -1,26 +1,25 @@
-var level = require('level')
+const level = require('level');
 
 // 1) Create our database, supply location and options.
 //    This will create or open the underlying store.
-var db = level('output', { valueEncoding: 'json' });
+const database = level('output', {valueEncoding: 'json'});
 
 async function test() {
-	await db.put('squarefeet', [{x:1}, {x: 2}]);
+	await database.put('squarefeet', [{x: 1}, {x: 2}]);
 
-	const val1 = await db.get('squarefeet');
+	const value1 = await database.get('squarefeet');
 
-	const newVal1 = [{x: 3}, {x: 4}];
+	const newValue1 = [{x: 3}, {x: 4}];
 
-	await db.put('squarefeet', [...val1, ...newVal1]);
+	await database.put('squarefeet', [...value1, ...newValue1]);
 
+	const value2 = await database.get('squarefeet');
 
-	const val2 = await db.get('squarefeet');
+	const newValue2 = [{x: 5}, {x: 6}];
 
-	const newVal2 = [{x: 5}, {x: 6}];
+	await database.put('squarefeet', [...value2, ...newValue2]);
 
-	await db.put('squarefeet', [...val2, ...newVal2]);
-
-	console.log(await db.get('squarefeet'));
+	console.log(await database.get('squarefeet'));
 }
 
 console.time('read + write');

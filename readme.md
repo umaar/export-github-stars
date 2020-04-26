@@ -1,7 +1,6 @@
-
-
-
 ### GitHub Star Export
+
+[![Actions Status](https://github.com/umaar/export-github-starts/workflows/Node%20CI/badge.svg)](https://github.com/umaar/export-github-starts/actions)
 
 This webapp queries the GitHub API to access your stars, and stores them in an SQLite database. 10,000 stars will occupy ~6mb worth of data.
 
@@ -26,8 +25,8 @@ DATABASE_NAME=output
 
 ```sh
 npm i
-npm run migrate-db-dev
-npm start
+make migrate-db-dev
+make start
 ```
 
 ### TODO:

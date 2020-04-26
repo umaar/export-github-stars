@@ -1,21 +1,21 @@
 require('dotenv').config();
-const Octokit = require('@octokit/rest')
+const Octokit = require('@octokit/rest');
 const LinkHeader = require('http-link-header');
-const level = require('level')
+const level = require('level');
 
-const db = level(process.env.DATABASE_NAME, { valueEncoding: 'json' });
+const database = level(process.env.DATABASE_NAME, {valueEncoding: 'json'});
 
 function getStarCountFromLinkHeader(linkValue) {
-	var link = LinkHeader.parse(linkValue);
+	const link = LinkHeader.parse(linkValue);
 	const [lastRel] = link.get('rel', 'last');
 	const lastURL = new URL(lastRel.uri);
-	const totalStars = parseInt(lastURL.searchParams.get('page'));
+	const totalStars = Number.parseInt(lastURL.searchParams.get('page'));
 
 	if (Number.isInteger(totalStars)) {
 		return totalStars;
-	} else {
-		throw new Error(`Couldn't retrieve total stars from: ${linkValue}`);
 	}
+
+	throw new Error(`Couldn't retrieve total stars from: ${linkValue}`);
 }
 
 const githubToken = process.env.GITHUB_TOKEN;
@@ -24,7 +24,7 @@ let octokitConfig = {};
 if (githubToken) {
 	octokitConfig = {
 		auth: `token ${githubToken}`
-	}
+	};
 } else {
 	console.log('No GitHub auth token found. API will be used in a non-authenticated manner');
 }
@@ -40,9 +40,9 @@ async function getStarsOnPage({page, amountPerPage}) {
 	}
 
 	console.time('API Request');
-	const response  = await octokit.activity.listReposStarredByUser({
+	const response = await octokit.activity.listReposStarredByUser({
 		page,
-		username: username,
+		username,
 		per_page: amountPerPage,
 		sort: 'created',
 		mediaType: {
@@ -51,18 +51,17 @@ async function getStarsOnPage({page, amountPerPage}) {
 	});
 	console.timeEnd('API Request');
 
-	return response
+	return response;
 }
 
 function flushDB() {
-	return db.put(username, []);
+	return database.put(username, []);
 }
 
 async function updateStarsInDB(newStars) {
-	const existingStars = await db.get(username);
+	const existingStars = await database.get(username);
 	const newValue = [...existingStars, ...newStars];
-	await db.put(username, newValue);
-	return;
+	await database.put(username, newValue);
 }
 
 async function start() {
@@ -113,7 +112,6 @@ async function start() {
 
 		await updateStarsInDB(cherryPickedData);
 	}
-
 
 	console.log('\nFinished', '\n');
 }

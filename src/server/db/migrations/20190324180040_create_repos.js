@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function (knex, Promise) {
 	return knex.schema.createTable('repos', table => {
 		table.integer('id').unique().primary();
 
@@ -14,10 +14,10 @@ exports.up = function(knex, Promise) {
 		table.string('language');
 		table.string('description');
 
-		table.timestamp('database_entry_updated_at').defaultTo(knex.fn.now())
+		table.timestamp('database_entry_updated_at').defaultTo(knex.fn.now());
 	});
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function (knex, Promise) {
 	return knex.schema.dropTable('repos');
 };
