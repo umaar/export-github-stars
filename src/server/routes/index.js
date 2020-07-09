@@ -39,6 +39,7 @@ const exampleGithubUsernames = [
 	'umaar',
 	'samyk',
 	'JamesLinus',
+	'nikitavoloboev',
 	'cheeaun',
 	'andrew',
 	'matthewmueller',

@@ -3,14 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@octokit/rest": "^17.6.0",
+    "@octokit/rest": "^18.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "config": "^3.3.1",
     "connect-flash": "^0.1.1",
-    "connect-session-knex": "^1.6.0",
+    "connect-session-knex": "^1.7.3",
     "cookie-parser": "~1.4.5",
-    "date-fns": "^2.12.0",
+    "date-fns": "^2.14.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "escape-goat": "^3.0.0",
@@ -18,15 +18,15 @@
     "express-rev": "^0.1.2",
     "express-session": "^1.17.1",
     "forcedomain": "^2.0.0",
-    "got": "^11.0.2",
-    "knex": "^0.21.0",
+    "got": "^11.5.0",
+    "knex": "^0.21.1",
     "nunjucks": "^3.2.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "signale": "^1.4.0",
-    "sqlite3": "^4.1.1",
+    "sqlite3": "^5.0.0",
     "token": "^0.1.0",
-    "uuid": "^7.0.3"
+    "uuid": "^8.2.0"
   },
   "devDependencies": {
     "@umaar/personal-eslint-config": "^1.0.2",
@@ -39,14 +39,14 @@
     "gulp-rev-rewrite": "^3.0.3",
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.5",
-    "rollup": "^2.7.2",
+    "rollup": "^2.21.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-terser": "^5.3.0",
+    "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-uglify": "^6.0.4",
     "tiny-lr": "^1.1.1",
     "vinyl-paths": "^3.0.1",
-    "xo": "^0.29.1"
+    "xo": "^0.32.1"
   },
   "xo": {
     "extends": "./node_modules/@umaar/personal-eslint-config/rules.json"
