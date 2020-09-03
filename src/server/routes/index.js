@@ -409,7 +409,7 @@ router.post('/submit-github-username', async (request, res) => {
 
 router.get('/user/:rawUsername', async (request, res) => {
 	function constructPageUrl(page = 1) {
-		return `/user/${username}?page=${page}`
+		return `/user/${username}?page=${page}`;
 	}
 
 	// Should redirect page to lowercase version here
