@@ -1,3 +1,4 @@
+const { readFileSync } = require('fs');
 const nodemon = require('nodemon');
 const gulp = require('gulp');
 const sass = require('gulp-sass');
@@ -191,7 +192,7 @@ gulp.task('scripts', async () => {
 			.on('end', resolve);
 	});
 
-	const manifest = gulp.src(paths.manifest);
+	const manifest = readFileSync(paths.manifest);
 
 	function replaceJsIfMap(filename) {
 		if (filename.includes('.map')) {

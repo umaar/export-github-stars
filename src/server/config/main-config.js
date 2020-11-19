@@ -5,7 +5,7 @@
 	const rev = require('express-rev');
 	const path = require('path');
 	const cookieParser = require('cookie-parser');
-	const forceDomain = require('forcedomain');
+	const forceDomainModule = require('forcedomain');
 	const bodyParser = require('body-parser');
 	const session = require('express-session');
 	const KnexSessionStore = require('connect-session-knex')(session);
@@ -46,7 +46,7 @@
 		app.set('view engine', 'html');
 
 		// *** Middlewares *** //
-		app.use(forceDomain({
+		app.use(forceDomainModule.forceDomain({
 			hostname: config.get('hostname'),
 			protocol: 'https'
 		}));
