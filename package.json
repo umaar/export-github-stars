@@ -14,7 +14,7 @@
     "debug": "^4.3.0",
     "dotenv": "^8.2.0",
     "escape-goat": "^3.0.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-rev": "^0.1.2",
     "express-session": "^1.17.1",
     "forcedomain": "^2.1.1",
